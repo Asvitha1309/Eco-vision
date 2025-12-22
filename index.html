@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoVision - AI Waste Classification</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+                <h1>EcoVision</h1>
+                <span class="tagline">Sustainability AI</span>
+            </div>
+            <div class="impact-stats">
+                <div class="stat">
+                    <span class="number" id="itemsClassified">0</span>
+                    <span class="label">Items Classified</span>
+                </div>
+                <div class="stat">
+                    <span class="number" id="co2Saved">0</span>
+                    <span class="label">CO₂ Saved (kg)</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="camera-section">
+                <div class="camera-container">
+                    <video id="camera" autoplay muted playsinline></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    <div class="camera-overlay">
+                        <div class="scan-frame">
+                            <div class="corner top-left"></div>
+                            <div class="corner top-right"></div>
+                            <div class="corner bottom-left"></div>
+                            <div class="corner bottom-right"></div>
+                        </div>
+                    </div>
+                    <button id="captureBtn" class="capture-btn">
+                        <i class="fas fa-camera"></i>
+                        <span>Capture Waste</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Or drag & drop an image here</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3>Classification Result</h3>
+                        <div class="confidence-badge" id="confidenceBadge">
+                            <span id="confidenceScore">0%</span>
+                        </div>
+                    </div>
+                    <div class="classification-result">
+                        <div class="category-icon" id="categoryIcon">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="category-info">
+                            <h2 id="categoryName">Analyzing...</h2>
+                            <p id="categoryDescription">Please wait while we analyze your waste item.</p>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn recycle" id="recycleBtn" style="display: none;">
+                            <i class="fas fa-recycle"></i>
+                            <span>Recycle</span>
+                        </button>
+                        <button class="action-btn compost" id="compostBtn" style="display: none;">
+                            <i class="fas fa-seedling"></i>
+                            <span>Compost</span>
+                        </button>
+                        <button class="action-btn dispose" id="disposeBtn" style="display: none;">
+                            <i class="fas fa-trash"></i>
+                            <span>Dispose</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>Environmental Impact</h3>
+                <div class="impact-grid">
+                    <div class="impact-item">
+                        <i class="fas fa-recycle"></i>
+                        <span>Recycled Items: <strong id="recycledCount">0</strong></span>
+                    </div>
+                    <div class="impact-item">
+                        <i class="fas fa-seedling"></i>
+                        <span>Composted Items: <strong id="compostedCount">0</strong></span>
+                    </div>
+                    <div class="impact-item">
+                        <i class="fas fa-water"></i>
+                        <span>Water Saved: <strong id="waterSaved">0L</strong></span>
+                    </div>
+                    <div class="impact-item">
+                        <i class="fas fa-battery-half"></i>
+                        <span>Energy Saved: <strong id="energySaved">0kWh</strong></span>
+                    </div> 
+                </div>
+                
+                <div class="tips-section">
+                    <h4>💡 Eco Tips</h4>
+                    <div class="tips-carousel" id="tipsCarousel">
+                        <div class="tip active">Rinse containers before recycling to prevent contamination</div>
+                        <div class="tip">Compost fruit peels and vegetable scraps to reduce landfill waste</div>
+                        <div class="tip">Check recycling symbols on plastic containers - not all plastics are recyclable</div>
+                        <div class="tip">Use reusable bags and containers to minimize single-use waste</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Analyzing waste with AI...</p>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Debug Panel (hidden by default) -->
+        <div class="debug-panel" id="debugPanel" style="display: none;">
+            <h4>Debug Information</h4>
+            <div id="debugInfo"></div>
+            <button onclick="testAPI()">Test API Connection</button>
+            <br><br>
+            <h5>Test Waste Classification:</h5>
+            <button onclick="testWasteClassification('plastic_bottle')">Plastic Bottle</button>
+            <button onclick="testWasteClassification('aluminum_can')">Aluminum Can</button>
+            <button onclick="testWasteClassification('banana_peel')">Banana Peel</button>
+            <button onclick="testWasteClassification('styrofoam')">Styrofoam</button>
+            <button onclick="testWasteClassification('cardboard')">Cardboard</button>
+            <br><br>
+            <button onclick="document.getElementById('debugPanel').style.display='none'">Close</button>
+        </div>
+
+        <!-- Debug Toggle Button -->
+        <button class="debug-toggle" onclick="document.getElementById('debugPanel').style.display='block'" title="Debug Info">🐛</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
