@@ -121,7 +121,7 @@ class EcoVision {
 
             console.log('Sending request to Google AI Studio...');
             
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${this.apiKey}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${this.apiKey}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -224,8 +224,9 @@ RESPOND WITH THIS EXACT JSON FORMAT ONLY:
             if (!jsonMatch) {
                 throw new Error('No JSON found in response');
             }
+            let cleanJson = jsonMatch[0].replace(/```json|```/g, "").trim();
             
-            const result = JSON.parse(jsonMatch[0]);
+            const result = JSON.parse(cleanJson);
             console.log('Parsed result:', result);
             
             // Validate the result structure
@@ -529,7 +530,7 @@ window.setApiKey = (key) => {
 window.testAPI = async () => {
     console.log('Testing Google AI Studio API...');
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${ecoVision.apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${ecoVision.apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -574,7 +575,7 @@ window.testWasteClassification = async (wasteType) => {
     const description = testImages[wasteType] || 'A waste item';
     
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${ecoVision.apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${ecoVision.apiKey}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
